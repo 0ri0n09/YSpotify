@@ -1,6 +1,5 @@
-const userList = new Array();
+const userList = [];
 
-function getUserById(id) {
-    const user = userList.find(x => x.id === id);
-    return user;
+export function getUserById(id) {
+    return userList.find(x => x.id === id);
 }
