@@ -1,11 +1,12 @@
 class User {
 
-    constructor(id, nickname, password, token, currentGroup) {
+    constructor(id, nickname, password, token, currentGroup, spotifyNickname) {
         this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.token = token;
         this.currentGroup = currentGroup;
+        this.spotifyNickname = spotifyNickname;
     }
 
     get getId() {
@@ -38,5 +39,17 @@ class User {
 
     get getCurrentGroup() {
         return this.currentGroup;
+    }
+
+    get isOwnerOfCurrentGroup() {
+        return this.currentGroup.getOwnerId() == this.getId();
+    }
+
+    get getSpotifyNickname() {
+        return this.spotifyNickname;
+    }
+
+    set setSpotifyNickname(newSpotifyNickname) {
+        this.spotifyNickname = newSpotifyNickname;
     }
 }

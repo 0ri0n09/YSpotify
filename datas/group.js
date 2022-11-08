@@ -1,10 +1,10 @@
 class Group {
 
-    constructor(id, name, memberList, ownerName) {
+    constructor(id, name, memberList, ownerId) {
         this.id = id;
         this.name = name;
         this.memberList = memberList;
-        this.ownerName = ownerName;
+        this.ownerId = ownerId;
     }
 
     get getId() {
@@ -27,12 +27,11 @@ class Group {
         return this.memberList.length;
     }
 
-    get getOwnerName() {
-        return this.ownerName;
+    get getOwnerId() {
+        return this.ownerId;
     }
 
-    set setOwnerName(newName) {
-        this.ownerName = newName;
+    set setOwnerId(newId) {
+        this.ownerId = newId;
     }
-
 }
