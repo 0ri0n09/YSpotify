@@ -1,10 +1,11 @@
 class User {
 
-    constructor(id, nickname, password, token) {
+    constructor(id, nickname, password, token, currentGroup) {
         this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.token = token;
+        this.currentGroup = currentGroup;
     }
 
     get getId() {
@@ -33,5 +34,9 @@ class User {
 
     set setToken(newToken) {
         this.token = newToken;
+    }
+
+    get getCurrentGroup() {
+        return this.currentGroup;
     }
 }

@@ -10,7 +10,12 @@ function deleteGroup(group) {
     groupList.splice(objWithIdIndex, 1);
 }
 
-function addUserToGroup(user, group) {
+function joinGroup(user, group) {
+
+    if(user.getCurrentGroup()) {
+       deleteUserToGroup(user, user.getCurrentGroup());
+    }
+
     group.memberList.push(user.id);
 }
 
