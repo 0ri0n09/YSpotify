@@ -8,43 +8,43 @@ class Assessment {
         this._attitude = attitude;
     }
 
-    get userId() {
+    get getUserId() {
         return this._userId;
     }
 
-    set userId(value) {
+    set setUserId(value) {
         this._userId = value;
     }
 
-    get attrait() {
+    get getAttrait() {
         return this._attrait;
     }
 
-    set attrait(value) {
+    set setAttrait(value) {
         this._attrait = value;
     }
 
-    get agitation() {
+    get getAgitation() {
         return this._agitation;
     }
 
-    set agitation(value) {
+    set setAgitation(value) {
         this._agitation = value;
     }
 
-    get preference() {
+    get getPreference() {
         return this._preference;
     }
 
-    set preference(value) {
+    set setPreference(value) {
         this._preference = value;
     }
 
-    get attitude() {
+    get getAttitude() {
         return this._attitude;
     }
 
-    set attitude(value) {
+    set setAttitude(value) {
         this._attitude = value;
     }
 }
