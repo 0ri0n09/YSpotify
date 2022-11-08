@@ -1,9 +1,14 @@
 class User {
 
-    constructor(nickname, password, token) {
+    constructor(id, nickname, password, token) {
+        this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.token = token;
+    }
+
+    get getId() {
+        return this.id;
     }
 
     get getNickname() {
@@ -13,6 +18,7 @@ class User {
     get getPassword() {
         return this.password;
     }
+    
     get getToken() {
         return this.token;
     }
