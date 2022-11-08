@@ -18,5 +18,8 @@
   "homepage": "https://github.com/0ri0n09/YSpotify#readme",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.2"
   }
 }
