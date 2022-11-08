@@ -1,7 +1,9 @@
+require('UserManager.js')
+
 const groupList = new Array();
 
-function addGroup(creatorName, groupName) {
-    const group = new Group(groupList.length + 1, groupName, new Array(), creatorName);
+function addGroup(creatorId, groupName) {
+    const group = new Group(groupList.length + 1, groupName, new Array(), creatorId);
     groupList.push(group);
 }
 
@@ -24,14 +26,14 @@ function deleteUserToGroup(user, group) {
     group.memberList.splice(objWithIdIndex, 1);
 
     // Gestion groupe.
-    if(group.getOwnerName == user.getName()) {
+    if(group.getOwnerId == user.getId()) {
         if(group.memberList.length == 0) {
             deleteGroup(group);
             console.log('Group' + group.getName() + " has been deleted.");
         } else {
             const random = Math.floor(Math.random() * group.memberList.length);
-            group.setOwnerName(group.memberList[random])
-            console.log('Group' + group.getName() + " has now a new owner named : " + group.getOwnerName);
+            group.setOwnerId(group.memberList[random])
+            console.log('Group' + group.getName() + " has now a new owner named : " + getUserById(group.getOwnerId).getNickname());
         }
     }
 }
