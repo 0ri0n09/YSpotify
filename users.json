@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": 0,
+      "nickname": "Anto",
+      "password": "supermdp",
+      "token": null,
+      "currentGroup": null,
+      "spotifyNickname": "mineof13"
+    },
+    {
+      "id": 1,
+      "nickname": "Orion",
+      "password": "supermdp",
+      "token": null,
+      "currentGroup": null,
+      "spotifyNickname": "Orion009"
+    }
+  ]
+}
