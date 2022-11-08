@@ -42,7 +42,7 @@ class User {
     }
 
     get isOwnerOfCurrentGroup() {
-        return this.currentGroup.getOwnerId() == this.getId();
+        return this.currentGroup.getOwnerId() === this.getId();
     }
 
     get getSpotifyNickname() {
