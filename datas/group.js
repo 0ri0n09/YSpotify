@@ -23,6 +23,10 @@ class Group {
         return this.memberList;
     }
 
+    get getMemberCount() {
+        return this.memberList.length;
+    }
+
     get getOwnerName() {
         return this.ownerName;
     }
