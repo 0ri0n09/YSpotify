@@ -13,9 +13,9 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+var client_id = '414d54457c2d425cbe1da7fba322e20e'; // Your client id
+var client_secret = '845f6a341f1f49638377221d7dcde338'; // Your secret
+var redirect_uri = 'http://localhost:8000/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -143,5 +143,5 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+console.log('Listening on 8000');
+app.listen(8000);
