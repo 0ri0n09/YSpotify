@@ -32,17 +32,25 @@ function joinGroup(userId, groupId) {
     const User = userManager.getUserById(userId);
     const Group = getGroupByID(groupId);
 
-    if(User.currentGroup !== groupId) {
-        deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
+    if(User.currentGroup != groupId) {
+        console.log("Delete old user group")
+        console.log(User)
+        console.log(groupId)
+        if (User.currentGroup != null) deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
+        Group.memberList.push(User.id);
+        User.currentGroup = groupId;
     }
 
-    User.currentGroup.push(groupId);
-    Group.memberList.push(User.id);
+    if(User.currentGroup == groupId) {
+        console.log(User)
+        console.log(groupId)
+        console.log("Cannot join the group you already joined.");
+    }
 }
 
 function deleteUserToGroup(user, group) {
 
-    const User = userManager.getUserById(userId);
+    const User = userManager.getUserById(user);
 
     if(group.memberList.length === 0) {
         deleteGroup(group);
@@ -52,7 +60,7 @@ function deleteUserToGroup(user, group) {
 
     const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user);
     group.memberList.splice(objWithIdIndex, 1);
-    User.currentGroup.splice(group.id)
+    User.currentGroup = null;
 
     // Gestion groupe.
     if(group.ownerId === user) {

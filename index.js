@@ -14,12 +14,12 @@ app.get ('/', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
-app.get('/add/:userId/:name', (req, res) => {
+app.get('/add/:id/:name', (req, res) => {
     groupManager.addGroup(req.params.id, req.params.name)
     res.redirect('/');
 })
 
-app.get('/join/:userId/:name', (req, res) => {
+app.get('/join/:user/:name', (req, res) => {
     groupManager.joinGroup(req.params.user, req.params.name)
     res.redirect('/');
 })
@@ -27,6 +27,9 @@ app.get('/join/:userId/:name', (req, res) => {
 app.listen(port, () => {
     json.users.forEach((user) => {
         userManager.userList.push(user);
+    });
+    json.groups.forEach((group) => {
+        groupManager.groupList.push(group);
     });
     console.log(`Example app listening on port ${port}`);
 })
