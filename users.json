@@ -4,8 +4,8 @@
       "id": 0,
       "nickname": "Anto",
       "password": "supermdp",
-      "token": "1234",
-      "currentGroup": null,
+      "token": null,
+      "currentGroup": 0,
       "spotifyNickname": "mineof13"
     },
     {
@@ -13,7 +13,7 @@
       "nickname": "Orion",
       "password": "supermdp",
       "token": null,
-      "currentGroup": null,
+      "currentGroup": 1,
       "spotifyNickname": "Orion009"
     }
   ]

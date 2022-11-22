@@ -2,8 +2,12 @@ const userList = [];
 const json = require ('./users.json');
 const jwt = require("jsonwebtoken");
 
-function getUserById (id) {
-    return userList.find(x => x.id === id);
+function getUserById(id) {
+    const objWithIdIndex = userList.findIndex((obj) => obj.id == id);
+    if(objWithIdIndex === -1) {
+        return "404 not found";
+    }
+    return userList[objWithIdIndex];
 }
 
 //Génération d'un access token

@@ -13,8 +13,21 @@ app.get ('/', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
-app.listen (port, () => {
-    console.log (`App port : ${port}`)
+app.get('/add/:userId/:name', (req, res) => {
+    groupManager.addGroup(req.params.id, req.params.name)
+    res.redirect('/');
+})
+
+app.get('/join/:userId/:name', (req, res) => {
+    groupManager.joinGroup(req.params.user, req.params.name)
+    res.redirect('/');
+})
+
+app.listen(port, () => {
+    json.users.forEach((user) => {
+        userManager.userList.push(user);
+    });
+    console.log(`Example app listening on port ${port}`);
 })
 
 //Login d'un user
