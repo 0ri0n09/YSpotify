@@ -1,6 +1,5 @@
 const userManager = require('./UserManager');
 const Group = require('./datas/group')
-const Console = require("console");
 const groupList = [];
 
 let nextGroupId = 0;
@@ -10,11 +9,7 @@ function addGroup(creatorId, groupName) {
     groupList.push(group);
 
     let user = userManager.getUserById(creatorId);
-
-    if(user.getCurrentGroup())
-        deleteUserToGroup(user, user.getCurrentGroup());
-
-    group.memberList.push(user.id);
+    joinGroup(user, group);
 }
 
 function deleteGroup(group) {
@@ -30,27 +25,44 @@ function getGroupByID(id) {
     return groupList[objWithIdIndex];
 }
 
-function joinGroup(user, group) {
 
-    if(user.getCurrentGroup())
-       deleteUserToGroup(user, user.getCurrentGroup());
+// Objet User ainsi qu'un objet group.
+function joinGroup(userId, groupId) {
 
-    group.memberList.push(user.id);
+    const User = userManager.getUserById(userId);
+    const Group = getGroupByID(groupId);
+
+    if(User.currentGroup !== groupId) {
+        deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
+    }
+
+    User.currentGroup.push(groupId);
+    Group.memberList.push(User.id);
 }
 
 function deleteUserToGroup(user, group) {
-    const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user.id);
+
+    const User = userManager.getUserById(userId);
+
+    if(group.memberList.length === 0) {
+        deleteGroup(group);
+        console.log('Group' + group.name + " has been deleted.");
+        return;
+    }
+
+    const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user);
     group.memberList.splice(objWithIdIndex, 1);
+    User.currentGroup.splice(group.id)
 
     // Gestion groupe.
-    if(group.getOwnerId === user.getId()) {
+    if(group.ownerId === user) {
         if(group.memberList.length === 0) {
             deleteGroup(group);
-            console.log('Group' + group.getName() + " has been deleted.");
+            console.log('Group' + group.name + " has been deleted.");
         } else {
             const random = Math.floor(Math.random() * group.memberList.length);
-            group.setOwnerId(group.memberList[random])
-            console.log('Group' + group.getName() + " has now a new owner named : " + userManager.getUserById(group.getOwnerId).getNickname());
+            group.ownerId = group.memberList[random];
+            console.log('Group' + group.name + " has now a new owner named : " + userManager.getUserById(group.ownerId).nickname);
         }
     }
 }

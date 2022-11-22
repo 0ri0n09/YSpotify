@@ -7,32 +7,8 @@ class Group {
         this.ownerId = ownerId;
     }
 
-    get getId() {
-        return this.id;
-    }
-
-    get getName() {
-        return this.name;
-    }
-
-    set setName(newName) {
-        this.name = newName;
-    }
-
-    get getMemberList() {
-        return this.memberList;
-    }
-
-    get getMemberCount() {
+    get MemberCount() {
         return this.memberList.length;
-    }
-
-    get getOwnerId() {
-        return this.ownerId;
-    }
-
-    set setOwnerId(newId) {
-        this.ownerId = newId;
     }
 }
 

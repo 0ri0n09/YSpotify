@@ -5,7 +5,7 @@
       "nickname": "Anto",
       "password": "supermdp",
       "token": null,
-      "currentGroup": 0,
+      "currentGroup": 1,
       "spotifyNickname": "mineof13"
     },
     {
@@ -15,6 +15,20 @@
       "token": null,
       "currentGroup": 1,
       "spotifyNickname": "Orion009"
+    }
+  ],
+  "groups": [
+    {
+      "id": 0,
+      "name": "G1",
+      "memberList": [],
+      "ownerId": 0
+    },
+    {
+      "id": 1,
+      "name": "G2",
+      "memberList": [0,1],
+      "ownerId": 1
     }
   ]
 }
