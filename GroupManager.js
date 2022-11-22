@@ -1,15 +1,27 @@
 const userManager = require('./UserManager');
 const Group = require('./datas/group')
+const Console = require("console");
 const groupList = [];
 
+let nextGroupId = 0;
+
 function addGroup(creatorId, groupName) {
-    const group = new Group(groupList.length + 1, groupName, [], creatorId);
+    const group = new Group(nextGroupId++, groupName, [], creatorId);
     groupList.push(group);
 }
 
 function deleteGroup(group) {
     const objWithIdIndex = groupList.findIndex((obj) => obj.id === group.id);
     groupList.splice(objWithIdIndex, 1);
+}
+
+function getGroupByID(id) {
+    const objWithIdIndex = groupList.findIndex((obj) => obj.id == id);
+    console.log('id : ' + objWithIdIndex + '/ id constructeur : ' + id)
+    if(objWithIdIndex === -1) {
+        return "404 not found";
+    }
+    return groupList[objWithIdIndex];
 }
 
 function joinGroup(user, group) {
@@ -43,4 +55,5 @@ module.exports = {
     deleteGroup,
     joinGroup,
     deleteUserToGroup,
+    getGroupByID,
 };
