@@ -1,4 +1,5 @@
-const userManager = require('UserManager.js')
+const userManager = require('./UserManager');
+const Group = require('./datas/group')
 const groupList = [];
 
 function addGroup(creatorId, groupName) {
@@ -13,9 +14,8 @@ function deleteGroup(group) {
 
 function joinGroup(user, group) {
 
-    if(user.getCurrentGroup()) {
+    if(user.getCurrentGroup())
        deleteUserToGroup(user, user.getCurrentGroup());
-    }
 
     group.memberList.push(user.id);
 }
@@ -36,3 +36,11 @@ function deleteUserToGroup(user, group) {
         }
     }
 }
+
+module.exports = {
+    groupList,
+    addGroup,
+    deleteGroup,
+    joinGroup,
+    deleteUserToGroup,
+};
