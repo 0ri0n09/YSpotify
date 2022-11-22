@@ -31,6 +31,7 @@ function addUserWithNicknameAndPassword (newNickname, newPassword) {
     }
     newUser["token"] = generateAccessToken (newUser);
     json.users.push (newUser);
+    //console.log ("TESTTT: "+ JSON.stringify (json.users));
     return newUser;
 }
 
