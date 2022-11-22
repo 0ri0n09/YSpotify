@@ -35,3 +35,5 @@ class Group {
         this.ownerId = newId;
     }
 }
+
+module.exports = Group;

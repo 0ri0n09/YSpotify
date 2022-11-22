@@ -48,3 +48,5 @@ class Assessment {
         this._attitude = value;
     }
 }
+
+module.exports = Assessment;

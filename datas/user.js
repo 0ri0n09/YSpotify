@@ -53,3 +53,5 @@ class User {
         this.spotifyNickname = newSpotifyNickname;
     }
 }
+
+module.exports = User;
