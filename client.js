@@ -1,3 +1,4 @@
+const userManager = require ('./UserManager.js');
 const axios = require ('axios');
 const instance = axios.create ({
     baseURL: 'http://localhost:3000/api/',
@@ -9,7 +10,7 @@ let refreshToken;
 
 //Requête de connexion
 instance.post ('/login', {
-    nickname: 'Anto',
+    nickname: 'Antod',
     password: 'supermdp',
 }).then ((response) => {
     console.log ('Authentification réussie !\n');

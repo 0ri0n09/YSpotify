@@ -1,9 +1,10 @@
 const jwt = require ('jsonwebtoken');
-const json = require ('./users.json');
+const json = require ('./database.json');
 require ('dotenv').config ();
 const express = require('express')
 const groupManager = require ('./GroupManager.js');
 const userManager = require ('./UserManager.js');
+const {generateAccessToken} = require("./UserManager");
 const app = express ();
 const port = 3000;
 app.use (express.json ());
@@ -13,25 +14,19 @@ app.get ('/', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
-app.get('/group/:id', (req, res) => {
-    res.send(JSON.stringify(groupManager.getGroupByID(req.params.id)));
+app.get('/add/:userId/:name', (req, res) => {
+    groupManager.addGroup(req.params.id, req.params.name)
+    res.redirect('/');
 })
 
-app.get('/user/:id', (req, res) => {
-    res.send(JSON.stringify(userManager.getUserById(req.params.id)));
-})
-
-app.get('/join/:user/:groupId', (req, res) => {
-    groupManager.joinGroup(req.params.user, req.params.groupId)
+app.get('/join/:userId/:name', (req, res) => {
+    groupManager.joinGroup(req.params.user, req.params.name)
     res.redirect('/');
 })
 
 app.listen(port, () => {
     json.users.forEach((user) => {
         userManager.userList.push(user);
-    });
-    json.groups.forEach((group) => {
-        groupManager.groupList.push(group);
     });
     console.log(`Example app listening on port ${port}`);
 })
@@ -40,21 +35,24 @@ app.listen(port, () => {
 app.post ('/api/login', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let currentUser;
+    let accessToken;
+    let refreshToken;
+    let anon = Boolean (true);
     json.users.forEach ((user) => {
         if (req.body.nickname === user.nickname && req.body.password === user.password) {
+            console.log ("Utilisateur connu...");
             currentUser = user;
+            anon = false;
         }
     });
-
     if (currentUser === undefined) {
-        //res.status(401).send('Aucun utilisateur trouvé, identifiants invalides');
-        addUserWithNicknameAndPassword (req.body.nickname, req.body.password);
-        return;
+        console.log ("Création de l'utilisateur anonyme...");
+        currentUser = userManager.addUserWithNicknameAndPassword (req.body.nickname, req.body.password);
     }
-
-    const accessToken = generateAccessToken (currentUser);
-    const refreshToken = generateRefreshToken (currentUser);
-
+    else if (anon === false) {
+        accessToken = userManager.generateAccessToken (currentUser);
+        refreshToken = userManager.generateRefreshToken (currentUser);
+    }
     res.send ({
         accessToken,
         refreshToken,

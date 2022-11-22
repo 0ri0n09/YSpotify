@@ -1,5 +1,5 @@
 const userList = [];
-const json = require ('./users.json');
+const json = require ('./database.json');
 const jwt = require("jsonwebtoken");
 
 function getUserById(id) {
@@ -12,12 +12,12 @@ function getUserById(id) {
 
 //Génération d'un access token
 function generateAccessToken (user) {
-    return jwt.sign (user, user.token, {expiresIn: '1h'});
+    return jwt.sign (user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
 }
 
 //Refresh
 function generateRefreshToken (user) {
-    return jwt.sign (user, user.token, {expiresIn: '1h'});
+    return jwt.sign (user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1h'});
 }
 
 //Ajouter un nouvel utilisateur
@@ -31,6 +31,7 @@ function addUserWithNicknameAndPassword (newNickname, newPassword) {
     }
     newUser["token"] = generateAccessToken (newUser);
     json.users.push (newUser);
+    return newUser;
 }
 
 module.exports = {
@@ -38,4 +39,5 @@ module.exports = {
     getUserById,
     generateAccessToken,
     generateRefreshToken,
+    addUserWithNicknameAndPassword,
 };
