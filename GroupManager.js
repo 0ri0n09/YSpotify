@@ -17,7 +17,6 @@ function deleteGroup(group) {
 
 function getGroupByID(id) {
     const objWithIdIndex = groupList.findIndex((obj) => obj.id == id);
-    console.log('id : ' + objWithIdIndex + '/ id constructeur : ' + id)
     if(objWithIdIndex === -1) {
         return "404 not found";
     }

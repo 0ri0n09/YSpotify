@@ -17,6 +17,10 @@ app.get('/group/:id', (req, res) => {
     res.send(JSON.stringify(groupManager.getGroupByID(req.params.id)));
 })
 
+app.get('/user/:id', (req, res) => {
+    res.send(JSON.stringify(userManager.getUserById(req.params.id)));
+})
+
 app.listen(port, () => {
     json.users.forEach((user) => {
         userManager.userList.push(user);
