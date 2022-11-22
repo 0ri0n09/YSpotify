@@ -78,7 +78,6 @@ function deleteUserToGroup(user, group) {
 module.exports = {
     groupList,
     addGroup,
-    deleteGroup,
     joinGroup,
     deleteUserToGroup,
     getGroupByID,

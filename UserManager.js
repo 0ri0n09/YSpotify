@@ -11,13 +11,17 @@ function getUserById(id) {
 }
 
 //Génération d'un access token
-function generateAccessToken (user) {
+function generateAccessToken(user) {
     return jwt.sign (user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
 }
 
 //Refresh
-function generateRefreshToken (user) {
+function generateRefreshToken(user) {
     return jwt.sign (user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1h'});
+}
+
+function createPlaylist(user) {
+
 }
 
 //Ajouter un nouvel utilisateur
