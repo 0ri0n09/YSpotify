@@ -32,33 +32,37 @@ function joinGroup(userId, groupId) {
     const User = userManager.getUserById(userId);
     const Group = getGroupByID(groupId);
 
-    if(User.currentGroup) {
-        deleteUserToGroup(User.id, Group);
+    if(User.currentGroup !== groupId) {
+        deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
     }
 
+    User.currentGroup.push(groupId);
     Group.memberList.push(User.id);
 }
 
 function deleteUserToGroup(user, group) {
 
+    const User = userManager.getUserById(userId);
+
     if(group.memberList.length === 0) {
         deleteGroup(group);
-        console.log('Group' + group.getName() + " has been deleted.");
+        console.log('Group' + group.name + " has been deleted.");
         return;
     }
 
     const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user);
     group.memberList.splice(objWithIdIndex, 1);
+    User.currentGroup.splice(group.id)
 
     // Gestion groupe.
     if(group.ownerId === user) {
         if(group.memberList.length === 0) {
             deleteGroup(group);
-            console.log('Group' + group.getName() + " has been deleted.");
+            console.log('Group' + group.name + " has been deleted.");
         } else {
             const random = Math.floor(Math.random() * group.memberList.length);
             group.ownerId = group.memberList[random];
-            console.log('Group' + group.getName() + " has now a new owner named : " + userManager.getUserById(group.ownerId).nickname());
+            console.log('Group' + group.name + " has now a new owner named : " + userManager.getUserById(group.ownerId).nickname);
         }
     }
 }
