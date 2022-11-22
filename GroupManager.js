@@ -9,8 +9,7 @@ function addGroup(creatorId, groupName) {
     groupList.push(group);
 
     let user = userManager.getUserById(creatorId);
-
-    group.memberList.push(user.id);
+    joinGroup(user, group);
 }
 
 function deleteGroup(group) {
@@ -26,12 +25,18 @@ function getGroupByID(id) {
     return groupList[objWithIdIndex];
 }
 
-function joinGroup(user, group) {
 
-    if(user.currentGroup)
-       deleteUserToGroup(user, user.currentGroup);
+// Objet User ainsi qu'un objet group.
+function joinGroup(userId, groupId) {
 
-    group.memberList.push(user.id);
+    const User = userManager.getUserById(userId);
+    const Group = getGroupByID(groupId);
+
+    if(User.currentGroup) {
+        deleteUserToGroup(User.id, Group);
+    }
+
+    Group.memberList.push(User.id);
 }
 
 function deleteUserToGroup(user, group) {
@@ -42,11 +47,11 @@ function deleteUserToGroup(user, group) {
         return;
     }
 
-    const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user.id);
+    const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user);
     group.memberList.splice(objWithIdIndex, 1);
 
     // Gestion groupe.
-    if(group.ownerId === user.id) {
+    if(group.ownerId === user) {
         if(group.memberList.length === 0) {
             deleteGroup(group);
             console.log('Group' + group.getName() + " has been deleted.");

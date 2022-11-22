@@ -19,13 +19,13 @@
   "groups": [
     {
       "id": 0,
-      "name": "Groupe 1",
+      "name": "G1",
       "memberList": [],
       "ownerId": 0
     },
     {
       "id": 1,
-      "name": "Groupe 2",
+      "name": "G2",
       "memberList": [],
       "ownerId": 1
     }

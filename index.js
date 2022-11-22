@@ -19,13 +19,8 @@ app.get('/user/:id', (req, res) => {
     res.send(JSON.stringify(userManager.getUserById(req.params.id)));
 })
 
-app.get('/add/:id/:name', (req, res) => {
-    groupManager.addGroup(req.params.id, req.params.name)
-    res.redirect('/');
-})
-
-app.get('/join/:user/:name', (req, res) => {
-    groupManager.joinGroup(req.params.user, req.params.name)
+app.get('/join/:user/:groupId', (req, res) => {
+    groupManager.joinGroup(req.params.user, req.params.groupId)
     res.redirect('/');
 })
 
