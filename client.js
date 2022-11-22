@@ -10,8 +10,8 @@ let refreshToken;
 
 //Requête de connexion
 instance.post ('/login', {
-    nickname: 'Antod',
-    password: 'supermdp',
+    nickname: 'Antoff',
+    password: 'supermdpppp',
 }).then ((response) => {
     console.log ('Authentification réussie !\n');
 
