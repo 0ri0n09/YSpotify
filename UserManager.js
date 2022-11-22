@@ -1,7 +1,11 @@
 const userList = [];
 
 function getUserById(id) {
-    return userList.find(x => x.id === id);
+    const objWithIdIndex = userList.findIndex((obj) => obj.id == id);
+    if(objWithIdIndex === -1) {
+        return "404 not found";
+    }
+    return userList[objWithIdIndex];
 }
 
 module.exports = {
