@@ -1,6 +1,5 @@
 const userManager = require('./UserManager');
 const Group = require('./datas/group')
-const Console = require("console");
 const groupList = [];
 
 let nextGroupId = 0;
@@ -10,9 +9,6 @@ function addGroup(creatorId, groupName) {
     groupList.push(group);
 
     let user = userManager.getUserById(creatorId);
-
-    if(user.getCurrentGroup())
-        deleteUserToGroup(user, user.getCurrentGroup());
 
     group.memberList.push(user.id);
 }
@@ -32,25 +28,32 @@ function getGroupByID(id) {
 
 function joinGroup(user, group) {
 
-    if(user.getCurrentGroup())
-       deleteUserToGroup(user, user.getCurrentGroup());
+    if(user.currentGroup)
+       deleteUserToGroup(user, user.currentGroup);
 
     group.memberList.push(user.id);
 }
 
 function deleteUserToGroup(user, group) {
+
+    if(group.memberList.length === 0) {
+        deleteGroup(group);
+        console.log('Group' + group.getName() + " has been deleted.");
+        return;
+    }
+
     const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user.id);
     group.memberList.splice(objWithIdIndex, 1);
 
     // Gestion groupe.
-    if(group.getOwnerId === user.getId()) {
+    if(group.ownerId === user.id) {
         if(group.memberList.length === 0) {
             deleteGroup(group);
             console.log('Group' + group.getName() + " has been deleted.");
         } else {
             const random = Math.floor(Math.random() * group.memberList.length);
-            group.setOwnerId(group.memberList[random])
-            console.log('Group' + group.getName() + " has now a new owner named : " + userManager.getUserById(group.getOwnerId).getNickname());
+            group.ownerId = group.memberList[random];
+            console.log('Group' + group.getName() + " has now a new owner named : " + userManager.getUserById(group.ownerId).nickname());
         }
     }
 }
