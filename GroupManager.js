@@ -5,6 +5,13 @@ const groupList = [];
 function addGroup(creatorId, groupName) {
     const group = new Group(groupList.length + 1, groupName, [], creatorId);
     groupList.push(group);
+
+    let user = userManager.getUserById(creatorId);
+
+    if(user.getCurrentGroup())
+        deleteUserToGroup(user, user.getCurrentGroup());
+
+    group.memberList.push(user.id);
 }
 
 function deleteGroup(group) {
