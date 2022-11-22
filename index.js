@@ -1,14 +1,99 @@
-// ---- Init ExpressJS ---- //
+const jwt = require ('jsonwebtoken');
+const json = require ('./users.json');
+require ('dotenv').config ();
 const express = require('express')
-const groupManager = require('./GroupManager.js');
-const userManager = require('./UserManager.js')
-const app = express()
-const port = 3000
+const groupManager = require ('./GroupManager.js');
+const userManager = require ('./UserManager.js');
+const app = express ();
+const port = 3000;
+app.use (express.json ());
+app.use (express.urlencoded ({ extended: true}));
 
-app.get('/', (req, res) => {
+app.get ('/', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+app.listen (port, () => {
+    console.log (`App port : ${port}`)
 })
+
+//Login d'un user
+app.post ('/api/login', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    let currentUser;
+    json.users.forEach ((user) => {
+        if (req.body.nickname === user.nickname && req.body.password === user.password) {
+            currentUser = user;
+        }
+    });
+
+    if (currentUser === undefined) {
+        //res.status(401).send('Aucun utilisateur trouvé, identifiants invalides');
+        addUserWithNicknameAndPassword (req.body.nickname, req.body.password);
+        return;
+    }
+
+    const accessToken = generateAccessToken (currentUser);
+    const refreshToken = generateRefreshToken (currentUser);
+
+    res.send ({
+        accessToken,
+        refreshToken,
+    });
+});
+
+//Refresh du token
+app.post ('/api/refreshToken', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split (' ')[1];
+    if (!token) {
+        return res.sendStatus (401);
+    }
+
+    jwt.verify (token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus (401);
+        }
+        delete user.iat;
+        delete user.exp;
+        const refreshedToken = generateAccessToken (user);
+        res.send ({
+            accessToken: refreshedToken,
+        });
+    });
+});
+
+//Token d'authentification
+function authenticateToken (req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    const authHeader = req.headers ['authorization'];
+    const token = authHeader && authHeader.split (' ')[1];
+
+    if (!token) {
+        return res.sendStatus (401);
+    }
+
+    jwt.verify (token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus (401);
+        }
+        req.user = user;
+        next();
+    });
+}
+
+//Accès aux posts
+app.get ('/api/posts', authenticateToken, (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if (req.user.admin === false) {
+        posts.forEach ((post) => {
+            if (req.user.id === post.author) {
+                res.send (post);
+            }
+        });
+    }
+    else {
+        res.send (posts);
+    }
+});
