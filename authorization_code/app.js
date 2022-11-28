@@ -106,6 +106,7 @@ app.get('/callback', function(req, res) {
             access_token: access_token,
             refresh_token: refresh_token
           }));
+        console.log ("TOKEN: " + access_token);
       } else {
         res.redirect('/#' +
           querystring.stringify({
