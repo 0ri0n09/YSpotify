@@ -43,7 +43,7 @@ app.post ('/api/login', (req, res) => {
     let anon = Boolean (true);
     json.users.forEach ((user) => {
         if (req.body.nickname === user.nickname && req.body.password === user.password) {
-            console.log ("Utilisateur" + req.body.nickname + " éxistant !");
+            console.log ("Utilisateur " + req.body.nickname + " existant !");
             currentUser = user;
             anon = false;
         }
@@ -104,7 +104,7 @@ function authenticateToken (req, res, next) {
     });
 }
 
-//Accès aux posts
+/*//Accès aux posts
 app.get ('/api/posts', authenticateToken, (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     if (req.user.admin === false) {
@@ -117,4 +117,4 @@ app.get ('/api/posts', authenticateToken, (req, res) => {
     else {
         res.send (posts);
     }
-});
+});*/
