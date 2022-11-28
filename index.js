@@ -13,10 +13,10 @@
     app.get ('/', (req, res) => {
         res.send(JSON.stringify(groupManager.groupList));
     })
-z
 
-    app.post('/addgroup/', function (req, res) {
-        groupManager.addGroup(req.params.id, req.params.name)
+
+    app.post('/addgroup', function (req, res) {
+        groupManager.addGroup(req.body.id, req.body.name);
     })
 
 

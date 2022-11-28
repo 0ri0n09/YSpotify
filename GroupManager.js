@@ -27,23 +27,16 @@ function getGroupByID(id) {
 
 
 // Objet User ainsi qu'un objet group.
-function joinGroup(userId, groupId) {
+function joinGroup(user, group) {
 
-    const User = userManager.getUserById(userId);
-    const Group = getGroupByID(groupId);
-
-    if(User.currentGroup != groupId) {
+    if(user.currentGroup != group.id) {
         console.log("Delete old user group")
-        console.log(User)
-        console.log(groupId)
-        if (User.currentGroup != null) deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
-        Group.memberList.push(User.id);
-        User.currentGroup = groupId;
+        if (user.currentGroup != null) deleteUserToGroup(user.id, getGroupByID(user.currentGroup));
+        group.memberList.push(user.id);
+        user.currentGroup = group.id;
     }
 
-    if(User.currentGroup == groupId) {
-        console.log(User)
-        console.log(groupId)
+    if(user.currentGroup == group.id) {
         console.log("Cannot join the group you already joined.");
     }
 }
