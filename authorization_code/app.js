@@ -14,6 +14,7 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
 var client_id = '414d54457c2d425cbe1da7fba322e20e'; // Your client id
+var user_id = '31eoxyk2gzxobvvwij5gye56xdqq'; //user id
 var client_secret = '845f6a341f1f49638377221d7dcde338'; // Your secret
 var redirect_uri = 'http://localhost:8000/callback'; // Your redirect uri
 
@@ -58,7 +59,6 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/callback', function(req, res) {
-
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -118,7 +118,6 @@ app.get('/callback', function(req, res) {
 });
 
 app.get('/refresh_token', function(req, res) {
-
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
@@ -133,12 +132,41 @@ app.get('/refresh_token', function(req, res) {
 
   request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
-      var access_token = body.access_token;
+      let access_token = body.access_token;
       res.send({
         'access_token': access_token
       });
     }
   });
+});
+
+app.get('/userPlaylist', function(req, res) {
+  // requesting access token from refresh token
+  let refresh_token = req.query.refresh_token;
+  let authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
+    form: {
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
+    },
+    json: true
+  };
+
+  /*let access_token;
+  request.post(authOptions, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      access_token = body.access_token;
+      res.send({
+        'access_token': access_token
+      });
+    }
+  });*/
+  request.get ('https://api.spotify.com/v1/users/playlists', authOptions, function(error, response, body) {
+    console.log(body);
+  });
+  // https://api.spotify.com/v1/users/31eoxyk2gzxobvvwij5gye56xdqq/playlists
+  // https://api.spotify.com/v1/users/{user_id}/playlists
 });
 
 console.log('Listening on 8000');
