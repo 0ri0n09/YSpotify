@@ -13,11 +13,12 @@
     app.get ('/', (req, res) => {
         res.send(JSON.stringify(groupManager.groupList));
     })
+z
 
-    app.get('/add/:id/:name', (req, res) => {
+    app.post('/addgroup/', function (req, res) {
         groupManager.addGroup(req.params.id, req.params.name)
-        res.redirect('/');
     })
+
 
     app.get('/join/:user/:name', (req, res) => {
         groupManager.joinGroup(req.params.user, req.params.name)
