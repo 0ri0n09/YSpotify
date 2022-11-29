@@ -160,7 +160,6 @@ app.get('/callback', function(req, res) {
                     }));
                 access_token_global = access_token;
                 refresh_token_global = refresh_token;
-                console.log ("TOKEN: " + access_token_global);
             } else {
                 res.redirect('/#' +
                     querystring.stringify({
