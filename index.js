@@ -161,7 +161,22 @@ app.get('/callback', function(req, res) {
     }
 });
 
-app.post ('getUserPlaylists')
+app.get('/getUserPlaylists', function(req, res) {
+    let state = generateRandomString (16);
+    res.cookie(stateKey, state);
+    // your application requests authorization
+    let scope = 'playlist-read-private';
+    res.redirect('https://api.spotify.com/v1/me/playlists?' +
+        querystring.stringify({
+            access_token: access_token_global,
+            token_type: 'Bearer',
+            response_type: 'code',
+            client_id: client_id,
+            scope: scope,
+            redirect_uri: redirect_uri,
+            state: state
+        }));
+});
 
 app.listen(port, () => {
     json.users.forEach((user) => {
