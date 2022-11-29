@@ -23,7 +23,7 @@ app.use (express.static(__dirname + '/public'))
     .use(cookieParser());
 
 
-app.get ('/', (req, res) => {
+app.get ('/print', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
