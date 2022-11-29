@@ -39,7 +39,7 @@ app.get('/print', (req, res) => {
 app.post('/addGroup', (req, res) => {
     let idUser = req.body.idUser;
     let nameGroup = req.body.groupName;
-/*    groupManager.addGroup(req.params.id, req.params.name)*/
+    //groupManager.addGroup(req.params.id, req.params.name)
     groupManager.addGroup(idUser, nameGroup)
     res.redirect('/print');
 })
