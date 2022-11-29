@@ -4,17 +4,6 @@ const json = require("./database.json");
 const groupList = [];
 
 function addGroup(creatorId, groupName) {
-/*    const group = new Group(groupName, [creatorId], creatorId);
-    groupList.push(group);
-
-    let user = userManager.getUserById(creatorId);
-
-    if (user.currentGroup != null) deleteUserToGroup(user.id, getGroupByID(user.currentGroup));
-
-    user.currentGroup = group.id;
-
-    console.log("Group créé pour " + user.nickname)*/
-
     console.log("AddGroup")
 
         groupList.forEach((group) => {

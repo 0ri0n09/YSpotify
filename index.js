@@ -23,18 +23,23 @@ app.use (express.static(__dirname + '/public'))
     .use(cookieParser());
 
 
-app.get ('/print', (req, res) => {
+app.get('/print', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
-app.get('/add/:id/:name', (req, res) => {
-    groupManager.addGroup(req.params.id, req.params.name)
-    res.redirect('/');
+app.post('/addGroup', (req, res) => {
+    let idUser = req.body.idUser;
+    let nameGroup = req.body.groupName;
+/*    groupManager.addGroup(req.params.id, req.params.name)*/
+    groupManager.addGroup(idUser, nameGroup)
+    res.redirect('/print');
 })
 
-app.get('/join/:user/:name', (req, res) => {
-    groupManager.joinGroup(req.params.user, req.params.name)
-    res.redirect('/');
+app.post('/join', (req, res) => {
+    let idUser = req.body.idUser;
+    let idGroup = req.body.idGroup;
+    groupManager.joinGroup(idUser, idGroup)
+    res.redirect('/print');
 })
 
 //Login d'un user
@@ -59,6 +64,8 @@ app.post ('/createUser', (req, res) => {
     else if (anon === false) {
         accessToken = userManager.generateAccessToken (currentUser);
         refreshToken = userManager.generateRefreshToken (currentUser);
+
+        console.log(currentUser)
     }
     res.send ({
         accessToken,
