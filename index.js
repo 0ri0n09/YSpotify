@@ -170,6 +170,7 @@ app.get('/callback', function(req, res) {
     }
 });
 
+//Get les playlists d'un utilisateur
 app.get('/getUserPlaylists', function(req, res) {
     let state = generateRandomString (16);
     res.cookie(stateKey, state);
