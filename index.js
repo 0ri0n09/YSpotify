@@ -12,7 +12,7 @@ const port = 8000;
 
 let client_id = '414d54457c2d425cbe1da7fba322e20e';
 let client_secret = '845f6a341f1f49638377221d7dcde338';
-let redirect_uri = 'http://localhost:8000/callback';
+const redirect_uri = 'http://localhost:8000/callback';
 let access_token_global = '';
 let refresh_token_global = '';
 
@@ -42,7 +42,7 @@ app.post('/join', (req, res) => {
     res.redirect('/print');
 })
 
-//Création d'un utilisateur
+//Création d'un user
 app.post ('/createUser', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let currentUser;
@@ -70,8 +70,8 @@ app.post ('/createUser', (req, res) => {
     res.send ({
         accessToken,
         refreshToken,
+        currentUser,
     });
-
 });
 
 /**
@@ -91,6 +91,7 @@ let generateRandomString = function (length) {
 };
 
 let stateKey = 'spotify_auth_state';
+//Login
 app.get ('/login', function(req, res) {
     let state = generateRandomString(16);
     res.cookie (stateKey, state);
@@ -159,6 +160,8 @@ app.get('/callback', function(req, res) {
         });
     }
 });
+
+app.post ('getUserPlaylists')
 
 app.listen(port, () => {
     json.users.forEach((user) => {
