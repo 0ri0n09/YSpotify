@@ -6,6 +6,8 @@ const querystring = require ("querystring");
 const json = require ('./database.json');
 const groupManager = require ('./GroupManager.js');
 const userManager = require ('./UserManager.js');
+const {groupList} = require("./GroupManager");
+const {stringify} = require("querystring");
 require ('dotenv').config ();
 const app = express ();
 const port = 8000;
@@ -37,7 +39,7 @@ app.get('/join/:user/:name', (req, res) => {
     res.redirect('/');
 })
 
-//Login d'un user
+//Création d'un utilisateur
 app.post ('/createUser', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let currentUser;
@@ -54,11 +56,19 @@ app.post ('/createUser', (req, res) => {
     if (currentUser === undefined) {
         console.log ("Création de l'utilisateur anonyme...");
         currentUser = userManager.addUserWithNicknameAndPassword (req.body.nickname, req.body.password);
+        anon = false;
         console.log ("'" + currentUser.nickname + "' ajouté !\n");
     }
-    else if (anon === false) {
+    if (anon === false) {
+        console.log ("CURRENT: " + currentUser.stringify);
         accessToken = userManager.generateAccessToken (currentUser);
         refreshToken = userManager.generateRefreshToken (currentUser);
+
+        let user = userManager.getUserByNickname(currentUser.nickname);
+        user.access_token = accessToken;
+        user.refreshToken = refreshToken;
+
+        console.log (user.stringify);
     }
     res.send ({
         accessToken,
@@ -89,7 +99,7 @@ app.get ('/login', function(req, res) {
     res.cookie (stateKey, state);
 
     // your application requests authorization
-    let scope = 'user-read-private user-read-email';
+    let scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public';
     res.redirect ('https://accounts.spotify.com/authorize?' +
         querystring.stringify ({
             response_type: 'code',
@@ -100,6 +110,7 @@ app.get ('/login', function(req, res) {
         }));
 });
 
+//Callback
 app.get('/callback', function(req, res) {
     let code = req.query.code || null;
     let state = req.query.state || null;
@@ -143,6 +154,7 @@ app.get('/callback', function(req, res) {
                     }));
                 access_token_global = access_token;
                 refresh_token_global = refresh_token;
+                console.log ("TOKEN: " + access_token_global);
             } else {
                 res.redirect('/#' +
                     querystring.stringify({

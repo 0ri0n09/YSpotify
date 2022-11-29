@@ -10,6 +10,14 @@ function getUserById(id) {
     return userList[objWithIdIndex];
 }
 
+function getUserByNickname(nickname) {
+    const objWithIdIndex = userList.findIndex((obj) => obj.nickname == nickname);
+    if(objWithIdIndex === -1) {
+        return "404 not found";
+    }
+    return userList[objWithIdIndex];
+}
+
 //Génération d'un access token
 function generateAccessToken (user) {
     return jwt.sign (user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
@@ -42,4 +50,5 @@ module.exports = {
     generateAccessToken,
     generateRefreshToken,
     addUserWithNicknameAndPassword,
+    getUserByNickname,
 };
