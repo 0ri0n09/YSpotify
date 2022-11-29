@@ -43,7 +43,7 @@ app.post ('/api/login', (req, res) => {
     let anon = Boolean (true);
     json.users.forEach ((user) => {
         if (req.body.nickname === user.nickname && req.body.password === user.password) {
-            console.log ("Utilisateur connu...");
+            console.log ("Utilisateur" + req.body.nickname + " éxistant !");
             currentUser = user;
             anon = false;
         }
@@ -51,6 +51,7 @@ app.post ('/api/login', (req, res) => {
     if (currentUser === undefined) {
         console.log ("Création de l'utilisateur anonyme...");
         currentUser = userManager.addUserWithNicknameAndPassword (req.body.nickname, req.body.password);
+        console.log (currentUser.nickname + " ajouté !");
     }
     else if (anon === false) {
         accessToken = userManager.generateAccessToken (currentUser);
