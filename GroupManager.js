@@ -1,21 +1,46 @@
 const userManager = require('./UserManager');
 const Group = require('./datas/group')
+const json = require("./database.json");
 const groupList = [];
 
-let nextGroupId = 0;
-
 function addGroup(creatorId, groupName) {
-    const group = new Group(nextGroupId++, groupName, [creatorId], creatorId);
+/*    const group = new Group(groupName, [creatorId], creatorId);
     groupList.push(group);
 
     let user = userManager.getUserById(creatorId);
+
     if (user.currentGroup != null) deleteUserToGroup(user.id, getGroupByID(user.currentGroup));
+
     user.currentGroup = group.id;
-    console.log("Group créé pour " + user.nickname)
+
+    console.log("Group créé pour " + user.nickname)*/
+
+    console.log("AddGroup")
+
+        groupList.forEach((group) => {
+
+
+            if (group.id+2 > groupList.length){
+
+                const newGroup = new Group(group.id+1, groupName, [creatorId], creatorId);
+                groupList.push(newGroup);
+
+                let user = userManager.getUserById(creatorId);
+
+                deleteUserToGroup(user.id, getGroupByID(user.currentGroup));
+
+                user.currentGroup = group.id+1;
+
+                console.log("Group créé pour " + user.nickname)
+
+            }
+        });
 
 }
 
 function deleteGroup(group) {
+    console.log("DeleteGroup")
+
     const objWithIdIndex = groupList.findIndex((obj) => obj.id === group.id);
     groupList.splice(objWithIdIndex, 1);
 }
@@ -32,6 +57,8 @@ function getGroupByID(id) {
 // Objet User ainsi qu'un objet group.
 function joinGroup(userId, groupId) {
 
+    console.log("JoinGroup")
+
     const User = userManager.getUserById(userId);
     const Group = getGroupByID(groupId);
 
@@ -44,8 +71,7 @@ function joinGroup(userId, groupId) {
     if(User.currentGroup != groupId) {
         console.log("Delete old user group")
         console.log(User)
-        console.log(groupId)
-        if (User.currentGroup != null) deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
+        deleteUserToGroup(User.id, getGroupByID(User.currentGroup));
         Group.memberList.push(User.id);
         User.currentGroup = groupId;
     }
@@ -54,21 +80,23 @@ function joinGroup(userId, groupId) {
 
 function deleteUserToGroup(user, group) {
 
+    console.log("DeleteUserToGroup")
+console.log(group.memberList.length)
     const User = userManager.getUserById(user);
-
-    if(group.memberList.length === 0) {
-        deleteGroup(group);
-        console.log('Group' + group.name + " has been deleted.");
-        return;
-    }
 
     const objWithIdIndex = group.memberList.findIndex((obj) => obj.id === user);
     group.memberList.splice(objWithIdIndex, 1);
     User.currentGroup = null;
 
+    if(group.memberList.length == 0) {
+        deleteGroup(group);
+        console.log('Group' + group.name + " has been deleted.");
+        return;
+    }
+
     // Gestion groupe.
     if(group.ownerId === user) {
-        if(group.memberList.length === 0) {
+        if(group.memberList.length == 0) {
             deleteGroup(group);
             console.log('Group' + group.name + " has been deleted.");
         } else {

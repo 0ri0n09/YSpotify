@@ -4,7 +4,8 @@
       "id": 0,
       "nickname": "Anto",
       "password": "supermdp",
-      "token": null,
+      "access_token": null,
+      "refresh_token": null,
       "currentGroup": 0,
       "spotifyNickname": "mineof13"
     },
@@ -12,16 +13,26 @@
       "id": 1,
       "nickname": "Orion",
       "password": "supermdp",
-      "token": null,
+      "access_token": null,
+      "refresh_token": null,
       "currentGroup": 1,
       "spotifyNickname": "Orion009"
+    },
+    {
+      "id": 2,
+      "nickname": "Alecs",
+      "password": "supermdp",
+      "access_token": null,
+      "refresh_token": null,
+      "currentGroup": 0,
+      "spotifyNickname": "Alecs"
     }
   ],
   "groups": [
     {
       "id": 0,
       "name": "G1",
-      "memberList": [0],
+      "memberList": [0,2],
       "ownerId": 0
     },
     {
