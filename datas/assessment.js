@@ -1,5 +1,4 @@
 class Assessment {
-
     constructor(userId, attrait, agitation, preference, attitude) {
         this._userId = userId;
         this._attrait = attrait;
@@ -8,5 +7,4 @@ class Assessment {
         this._attitude = attitude;
     }
 }
-
 module.exports = Assessment;

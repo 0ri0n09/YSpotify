@@ -1,3 +1,4 @@
+require ('dotenv').config ();
 const express = require ('express')
 const cookieParser = require ("cookie-parser");
 const cors = require ("cors");
@@ -6,7 +7,6 @@ const querystring = require ("querystring");
 const json = require ('./database.json');
 const groupManager = require ('./GroupManager.js');
 const userManager = require ('./UserManager.js');
-require ('dotenv').config ();
 
 const app = express ();
 const port = 8000;
