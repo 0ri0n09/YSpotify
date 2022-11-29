@@ -1,7 +1,7 @@
 const userManager = require ('./UserManager.js');
 const axios = require ('axios');
 const instance = axios.create ({
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: 'http://localhost:8000/',
 });
 
 console.log ('Tentative de login...');
@@ -9,9 +9,9 @@ console.log ('Tentative de login...');
 let refreshToken;
 
 //Requête de connexion
-instance.post ('/login', {
-    nickname: 'Antoff',
-    password: 'supermdpppp',
+instance.post ('/createUser', {
+    nickname: 'Orion',
+    password: 'supermdp',
 }).then ((response) => {
     console.log ('Authentification réussie !\n');
 
@@ -28,7 +28,7 @@ function loadUserInfos () {
     instance.get ('/posts').then((response) => {
         console.log (response.data);
     }).catch((err) => {
-        //console.log (err.response.status);
+            console.log (err.reason);
     });
 }
 

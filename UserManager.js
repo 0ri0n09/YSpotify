@@ -15,7 +15,7 @@ function generateAccessToken (user) {
     return jwt.sign (user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
 }
 
-//Refresh
+//Refresh token
 function generateRefreshToken (user) {
     return jwt.sign (user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1h'});
 }
@@ -25,13 +25,14 @@ function addUserWithNicknameAndPassword (newNickname, newPassword) {
     let newUser = {
         'nickname': newNickname,
         'password': newPassword,
-        'token': null,
+        'access_token': null,
+        'refresh_token': null,
         "currentGroup": null,
         "spotifyNickname": null
     }
-    newUser["token"] = generateAccessToken (newUser);
+    newUser["access_token"] = generateAccessToken (newUser);
+    newUser["refresh_token"] = generateAccessToken (newUser);
     json.users.push (newUser);
-    //console.log ("TESTTT: "+ JSON.stringify (json.users));
     return newUser;
 }
 
