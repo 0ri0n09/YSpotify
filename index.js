@@ -7,8 +7,14 @@ const json = require ('./database.json');
 const groupManager = require ('./GroupManager.js');
 const userManager = require ('./UserManager.js');
 require ('dotenv').config ();
+
 const app = express ();
 const port = 8000;
+app.use (express.json ());
+app.use (express.urlencoded ({ extended: true}));
+app.use (express.static(__dirname + '/public'))
+    .use(cors())
+    .use(cookieParser());
 
 let client_id = '414d54457c2d425cbe1da7fba322e20e';
 let client_secret = '845f6a341f1f49638377221d7dcde338';
@@ -16,17 +22,20 @@ const redirect_uri = 'http://localhost:8000/callback';
 let access_token_global = '';
 let refresh_token_global = '';
 
-app.use (express.json ());
-app.use (express.urlencoded ({ extended: true}));
-app.use (express.static(__dirname + '/public'))
-    .use(cors())
-    .use(cookieParser());
+let SpotifyWebApi = require ('spotify-web-api-node');
+const { response } = require ("express");
+let spotifyApi = new SpotifyWebApi ({
+    clientId: client_id,
+    clientSecret: client_secret,
+    redirectUri: redirect_uri,
+});
 
-
+//Afficher la liste des groupes
 app.get('/print', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
+//Ajouter un utilisateur à un groupe
 app.post('/addGroup', (req, res) => {
     let idUser = req.body.idUser;
     let nameGroup = req.body.groupName;
@@ -35,6 +44,7 @@ app.post('/addGroup', (req, res) => {
     res.redirect('/print');
 })
 
+//Rejoindre un groupe
 app.post('/join', (req, res) => {
     let idUser = req.body.idUser;
     let idGroup = req.body.idGroup;
@@ -64,7 +74,6 @@ app.post ('/createUser', (req, res) => {
     else if (anon === false) {
         accessToken = userManager.generateAccessToken (currentUser);
         refreshToken = userManager.generateRefreshToken (currentUser);
-
         console.log(currentUser)
     }
     res.send ({
@@ -151,6 +160,7 @@ app.get('/callback', function(req, res) {
                     }));
                 access_token_global = access_token;
                 refresh_token_global = refresh_token;
+                console.log ("TOKEN: " + access_token_global);
             } else {
                 res.redirect('/#' +
                     querystring.stringify({
@@ -164,7 +174,6 @@ app.get('/callback', function(req, res) {
 app.get('/getUserPlaylists', function(req, res) {
     let state = generateRandomString (16);
     res.cookie(stateKey, state);
-    // your application requests authorization
     let scope = 'playlist-read-private';
     res.redirect('https://api.spotify.com/v1/me/playlists?' +
         querystring.stringify({
@@ -178,12 +187,61 @@ app.get('/getUserPlaylists', function(req, res) {
         }));
 });
 
+//Ajouter des pistes à une playlist
+app.post('/addTrack', function(req, res) {
+    spotifyApi.setAccessToken (access_token_global);
+    let playlistId = JSON.stringify (req.body.playlistId);
+    let tracks = JSON.stringify (req.body.tracks);
+    //let tracks = [ ];
+    tracks.concat (JSON.stringify (req.body.tracks));
+    //spotifyApi.addTracksToPlaylist('3l06nffNmSPAnU1B2RcJkl', ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"])
+    spotifyApi.addTracksToPlaylist (playlistId, tracks)
+        .then(function (data) {
+            console.log ('Pistes ajoutées !');
+            console.log (data.body);
+            res.send (data.body);
+        }, function (err) {
+            console.log('Erreur: ', err);
+        });
+});
+
+//Créer une playlist
+app.post('/addPlaylist', function(req, res) {
+    spotifyApi.setAccessToken (access_token_global);
+    let name = req.body.name;
+    let options = {
+        description: req.body.description,
+        public: req.body.public
+    };
+    //spotifyApi.createPlaylist(name, {'description': 'My description', 'public': true})
+    spotifyApi.createPlaylist (name, options)
+        .then(function (data) {
+            console.log ('Playlist Créee');
+            console.log (data.body);
+            res.send (data.body);
+        }, function (err) {
+            console.log ('Erreur: ', err);
+        });
+});
+
+//User
+app.get('/me', function(req, res) {
+    spotifyApi.setAccessToken (access_token_global);
+    spotifyApi.getMe()
+        .then(function (data) {
+            console.log (data.body);
+            res.send (data.body);
+        }, function (err) {
+            console.log('Something went wrong!', err);
+        });
+});
+
 app.listen(port, () => {
-    json.users.forEach((user) => {
-        userManager.userList.push(user);
-    });
-    json.groups.forEach((group) => {
-        groupManager.groupList.push(group);
-    });
-    console.log(`Example app listening on port ${port}`);
-})
+        json.users.forEach((user) => {
+            userManager.userList.push(user);
+        });
+        json.groups.forEach((group) => {
+            groupManager.groupList.push(group);
+        });
+        console.log(`Example app listening on port ${port}`);
+    })
