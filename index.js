@@ -42,7 +42,7 @@ app.post('/join', (req, res) => {
     res.redirect('/print');
 })
 
-//Login d'un user
+//Création d'un utilisateur
 app.post ('/createUser', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let currentUser;
@@ -96,7 +96,7 @@ app.get ('/login', function(req, res) {
     res.cookie (stateKey, state);
 
     // your application requests authorization
-    let scope = 'user-read-private user-read-email';
+    let scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public';
     res.redirect ('https://accounts.spotify.com/authorize?' +
         querystring.stringify ({
             response_type: 'code',
