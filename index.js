@@ -16,6 +16,27 @@ app.use (express.static(__dirname + '/public'))
     .use(cors())
     .use(cookieParser());
 
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            version: "1.0.0",
+            title: "YSpotify API",
+            description: "YSpotify API Information",
+            contact: {
+                name: "Amazing Developer"
+            },
+            servers: ["http://localhost:8000"]
+        }
+    },
+    apis: ["index.js"]
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 let client_id = '414d54457c2d425cbe1da7fba322e20e';
 let client_secret = '845f6a341f1f49638377221d7dcde338';
 const redirect_uri = 'http://localhost:8000/callback';
@@ -31,11 +52,33 @@ let spotifyApi = new SpotifyWebApi ({
 });
 
 //Afficher la liste des groupes
+/**
+ * @swagger
+ * /print:
+ *  get:
+ *    description: Get all informations about groups
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
 app.get('/print', (req, res) => {
     res.send(JSON.stringify(groupManager.groupList));
 })
 
 //Ajouter un utilisateur à un groupe
+/**
+ * @swagger
+ * /addGroup:
+ *  post:
+ *    description: Add user to a specific group
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.post('/addGroup', (req, res) => {
     let idUser = req.body.idUser;
     let nameGroup = req.body.groupName;
@@ -45,6 +88,19 @@ app.post('/addGroup', (req, res) => {
 })
 
 //Rejoindre un groupe
+/**
+ * @swagger
+ * /join:
+ *  post:
+ *    description: Join a specific group
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.post('/join', (req, res) => {
     let idUser = req.body.idUser;
     let idGroup = req.body.idGroup;
@@ -53,6 +109,17 @@ app.post('/join', (req, res) => {
 })
 
 //Création d'un user
+/**
+ * @swagger
+ * /createUser:
+ *  post:
+ *    description: Create a new user
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ */
 app.post ('/createUser', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let currentUser;
@@ -100,7 +167,16 @@ let generateRandomString = function (length) {
 };
 
 let stateKey = 'spotify_auth_state';
-//Login
+/**
+ * @swagger
+ * /login:
+ *  get:
+ *    description: Use to request a login
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *
+ */
 app.get ('/login', function(req, res) {
     let state = generateRandomString(16);
     res.cookie (stateKey, state);
@@ -117,6 +193,15 @@ app.get ('/login', function(req, res) {
         }));
 });
 
+/**
+ * @swagger
+ * /callback:
+ *  get:
+ *    description: Get a callback from spotify
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
 app.get('/callback', function(req, res) {
     let code = req.query.code || null;
     let state = req.query.state || null;
@@ -171,6 +256,19 @@ app.get('/callback', function(req, res) {
 });
 
 //Get les playlists d'un utilisateur
+/**
+ * @swagger
+ * /getUserPlaylists:
+ *  get:
+ *    description: Get all playlist of an user
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.get('/getUserPlaylists', function(req, res) {
     let state = generateRandomString (16);
     res.cookie(stateKey, state);
@@ -188,6 +286,19 @@ app.get('/getUserPlaylists', function(req, res) {
 });
 
 //Ajouter des pistes à une playlist
+/**
+ * @swagger
+ * /addTrack:
+ *  post:
+ *    description: Add track to a playlist
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.post('/addTrack', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     let playlistId = JSON.stringify (req.body.playlistId);
@@ -206,6 +317,19 @@ app.post('/addTrack', function(req, res) {
 });
 
 //Créer une playlist
+/**
+ * @swagger
+ * /addPlaylist:
+ *  post:
+ *    description: Create playlist
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.post('/addPlaylist', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     let name = req.body.name;
@@ -225,6 +349,19 @@ app.post('/addPlaylist', function(req, res) {
 });
 
 //User
+/**
+ * @swagger
+ * /addPlaylist:
+ *  get:
+ *    description: Get informations about yourself
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.get('/me', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     spotifyApi.getMe()
