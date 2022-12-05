@@ -268,7 +268,7 @@ app.get('/callback', function(req, res) {
 //User
 /**
  * @swagger
- * /addPlaylist:
+ * /me:
  *  get:
  *    description: Get informations about yourself
  *    responses:
@@ -337,6 +337,7 @@ app.get('/getUserPlaylists', function(req, res) {
 app.post('/addTrack', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     let playlistId = JSON.stringify (req.body.playlistId);
+    console.log("PLAYLISSST:" + playlistId);
     let tracks = JSON.stringify (req.body.tracks);
     //let tracks = [ ];
     tracks.concat (JSON.stringify (req.body.tracks));
@@ -365,8 +366,6 @@ app.post('/addTrack', function(req, res) {
  *      '404':
  *        description: Not found
  */
-
-//Ajouter une playlist
 app.post('/addPlaylist', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     let name = req.body.name;
@@ -386,7 +385,20 @@ app.post('/addPlaylist', function(req, res) {
 });
 
 //10 derniers titres joués par l'utilisateur courant
-app.get('/recentlyPlayed', function(req, res) {
+/**
+ * @swagger
+ * /:userId/recentlyPlayed:
+ *  get:
+ *    description: 10 derniers titres joués par l'utilisateur courant
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
+app.get('/:userId/recentlyPlayed', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     spotifyApi.getMyRecentlyPlayedTracks({
         limit: 10
@@ -400,15 +412,27 @@ app.get('/recentlyPlayed', function(req, res) {
 });
 
 //Créer une nouvelle playlist et ajouter les 10 musiques préférées d'un utilisateur
+/**
+ * @swagger
+ * /createPlaylistWithTopTracks:
+ *  post:
+ *    description: Créer une nouvelle playlist et ajouter les 10 musiques préférées d'un utilisateur
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.post('/createPlaylistWithTopTracks', async (req, res) => {
     spotifyApi.setAccessToken (access_token_global);
-    const options = {
-        limit: 10,
-    };
     try {
         let topTracks = [];
-        const userId = req.body.userId;
-        // Récupérer les 10 chansons les plus écoutées de l'utilisateur
+        const options = {
+            limit: 10,
+        };
+        const userId = req.params.userId;
         const data = await new Promise((resolve, reject) => {
             spotifyApi.getMyTopTracks(options, function(err, data) {
                 if (err) {
@@ -419,23 +443,33 @@ app.post('/createPlaylistWithTopTracks', async (req, res) => {
             });
         });
         topTracks = data.body.items;
-        // Créer la playlist
-        const playlist = await spotifyApi.createPlaylist (userId, { name: 'Mes 10 top pistes' });
-        // Ajouter les musiques à la playlist
-        await spotifyApi.addTracksToPlaylist (playlist.body.id, topTracks);
-        res.json ({ message: 'Playlist crée avec succès !'});
+        const playlist = await spotifyApi.createPlaylist(userId, { name: 'Mes 10 top pistes' });
+        const tracks = topTracks.map(track => track.id);
+        await spotifyApi.addTracksToPlaylist(playlist.body.id, tracks);
+        res.json({ message: 'Playlist crée avec succès !' });
     } catch (err) {
         res.status(500).send(err);
-        console.log (err);
+        console.log(err);
     }
 });
 
-//Déterminer la personnalité d'un utilisateur
+//Déterminer la personnalité d'un utilisateur authentifié
+/**
+ * @swagger
+ * /:userId/personality:
+ *  get:
+ *    description: Déterminer la personnalité d'un utilisateur authentifié
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
 app.get('/:userId/personality', async (req, res) => {
     spotifyApi.setAccessToken (access_token_global);
-    const userId = req.params.userId;
     const likedSongs = await spotifyApi.getMySavedTracks ({ limit: 50 });
-
     const danceAppeal = calculateDanceAppeal (likedSongs);
     const agitation = calculateAgitation (likedSongs);
     const vocalInstrumentalPreference = calculateVocalInstrumentalPreference (likedSongs);
