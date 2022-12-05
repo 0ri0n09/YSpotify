@@ -32,8 +32,8 @@ const swaggerOptions = {
     },
     apis: ["index.js"]
 };
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const swaggerDocs = swaggerJsDoc (swaggerOptions);
+app.use ("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 let client_id = '414d54457c2d425cbe1da7fba322e20e';
 let client_secret = '845f6a341f1f49638377221d7dcde338';
@@ -42,7 +42,6 @@ let access_token_global = '';
 let refresh_token_global = '';
 
 let SpotifyWebApi = require ('spotify-web-api-node');
-const { response } = require ("express");
 let spotifyApi = new SpotifyWebApi ({
     clientId: client_id,
     clientSecret: client_secret,
@@ -542,5 +541,5 @@ app.listen(port, () => {
         json.groups.forEach((group) => {
             groupManager.groupList.push(group);
         });
-        console.log(`Example app listening on port ${port}`);
+        console.log(`app is listening on port ${port}`);
     })
