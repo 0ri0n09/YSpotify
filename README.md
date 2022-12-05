@@ -15,14 +15,19 @@
  ## Pour les requêtes et endpoints, utiliser par exemple (en GET ou POST) :
  ### http://localhost:8000/me
  
- ## Avant d'envoyer des requêtes, se connecter avec 
- ### http://localhost:8000/login
+ ## Avant d'envoyer des requêtes, s'authentifier et se connecter avec 
+ ### http://localhost:8000/login --> OAuth 2.0
  ### ou se créer un utilisateur
  ### http://localhost:8000/createUser
  
  ## Pour la documentation openAPI :
  ### http://localhost:8000/api-docs
  
+# Groupe :
+### Jaremczuk Jonathan
+### Cocco Anthony
+### Pinel Antony
+### Bruno Alexandre
  
 
  
