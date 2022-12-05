@@ -43,7 +43,6 @@ let refresh_token_global = '';
 
 let SpotifyWebApi = require ('spotify-web-api-node');
 const { response } = require ("express");
-const axios = require("axios");
 let spotifyApi = new SpotifyWebApi ({
     clientId: client_id,
     clientSecret: client_secret,
