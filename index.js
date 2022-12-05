@@ -45,6 +45,7 @@ let refresh_token_global = '';
 
 let SpotifyWebApi = require ('spotify-web-api-node');
 const { response } = require ("express");
+const axios = require("axios");
 let spotifyApi = new SpotifyWebApi ({
     clientId: client_id,
     clientSecret: client_secret,
@@ -182,7 +183,18 @@ app.get ('/login', function(req, res) {
     res.cookie (stateKey, state);
 
     // your application requests authorization
-    let scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public';
+    let scope = 'user-read-private ' +
+        'user-read-email ' +
+        'playlist-read-private ' +
+        'playlist-read-collaborative ' +
+        'playlist-modify-private ' +
+        'playlist-modify-public ' +
+        'user-library-read ' +
+        'user-library-modify ' +
+        'user-top-read ' +
+        'user-read-recently-played ' +
+        'user-read-playback-position ';
+
     res.redirect ('https://accounts.spotify.com/authorize?' +
         querystring.stringify ({
             response_type: 'code',
@@ -255,6 +267,31 @@ app.get('/callback', function(req, res) {
     }
 });
 
+//User
+/**
+ * @swagger
+ * /addPlaylist:
+ *  get:
+ *    description: Get informations about yourself
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: Unauthorized
+ *      '404':
+ *        description: Not found
+ */
+app.get('/me', function(req, res) {
+    spotifyApi.setAccessToken (access_token_global);
+    spotifyApi.getMe()
+        .then(function (data) {
+            console.log (data.body);
+            res.send (data.body);
+        }, function (err) {
+            console.log('Something went wrong!', err);
+        });
+});
+
 //Get les playlists d'un utilisateur
 /**
  * @swagger
@@ -271,7 +308,7 @@ app.get('/callback', function(req, res) {
  */
 app.get('/getUserPlaylists', function(req, res) {
     let state = generateRandomString (16);
-    res.cookie(stateKey, state);
+    res.cookie (stateKey, state);
     let scope = 'playlist-read-private';
     res.redirect('https://api.spotify.com/v1/me/playlists?' +
         querystring.stringify({
@@ -285,7 +322,7 @@ app.get('/getUserPlaylists', function(req, res) {
         }));
 });
 
-//Ajouter des pistes à une playlist
+//Ajouter des titres à une playlist
 /**
  * @swagger
  * /addTrack:
@@ -330,6 +367,8 @@ app.post('/addTrack', function(req, res) {
  *      '404':
  *        description: Not found
  */
+
+//Ajouter une playlist
 app.post('/addPlaylist', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
     let name = req.body.name;
@@ -348,29 +387,121 @@ app.post('/addPlaylist', function(req, res) {
         });
 });
 
-//User
-/**
- * @swagger
- * /addPlaylist:
- *  get:
- *    description: Get informations about yourself
- *    responses:
- *      '200':
- *        description: A successful response
- *      '401':
- *        description: Unauthorized
- *      '404':
- *        description: Not found
- */
-app.get('/me', function(req, res) {
+//10 derniers titres joués par l'utilisateur courant
+app.get('/recentlyPlayed', function(req, res) {
     spotifyApi.setAccessToken (access_token_global);
-    spotifyApi.getMe()
-        .then(function (data) {
-            console.log (data.body);
-            res.send (data.body);
-        }, function (err) {
-            console.log('Something went wrong!', err);
+    spotifyApi.getMyRecentlyPlayedTracks({
+        limit: 10
+    }).then(function (data) {
+        console.log("Les 10 derniers titres écoutés sont : ");
+        data.body.items.forEach (item => console.log (item.track));
+        res.send (data.body);
+    }, function (err) {
+        console.log('Erreur: ', err);
+    });
+});
+
+//Créer une nouvelle playlist et ajouter les 10 musiques préférées d'un utilisateur
+app.post('/createPlaylistWithTopTracks', async (req, res) => {
+    spotifyApi.setAccessToken (access_token_global);
+    const options = {
+        limit: 10,
+    };
+    try {
+        let topTracks = [];
+        const userId = req.body.userId;
+        // Récupérer les 10 chansons les plus écoutées de l'utilisateur
+        const data = await new Promise((resolve, reject) => {
+            spotifyApi.getMyTopTracks(options, function(err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(data);
+                }
+            });
         });
+        topTracks = data.body.items;
+        // Créer la playlist
+        const playlist = await spotifyApi.createPlaylist (userId, { name: 'Mes 10 top pistes' });
+        // Ajouter les musiques à la playlist
+        await spotifyApi.addTracksToPlaylist (playlist.body.id, topTracks);
+        res.json ({ message: 'Playlist crée avec succès !'});
+    } catch (err) {
+        res.status(500).send(err);
+        console.log (err);
+    }
+});
+
+//Déterminer la personnalité d'un utilisateur
+app.get('/:userId/personality', async (req, res) => {
+    spotifyApi.setAccessToken (access_token_global);
+    const userId = req.params.userId;
+    const likedSongs = await spotifyApi.getMySavedTracks ({ limit: 50 });
+
+    const danceAppeal = calculateDanceAppeal (likedSongs);
+    const agitation = calculateAgitation (likedSongs);
+    const vocalInstrumentalPreference = calculateVocalInstrumentalPreference (likedSongs);
+    const attitude = calculateAttitude (likedSongs);
+
+    res.json({
+        danceAppeal,
+        agitation,
+        vocalInstrumentalPreference,
+        attitude
+    });
+    function calculateDanceAppeal (likedSongs) {
+        let danceAppeal = 5;
+        const danceableSongs = Object.values(likedSongs).filter(song => song.danceability > 0.8);
+        danceAppeal += danceableSongs.length;
+        if (danceAppeal < 1) {
+            danceAppeal = 1;
+        } else if (danceAppeal > 10) {
+            danceAppeal = 10;
+        }
+        return danceAppeal;
+    }
+    function calculateAgitation (likedSongs) {
+        let agitation = 5;
+        const likedSongsArray = Array.from(likedSongs);
+        const lowValenceSongs = likedSongsArray.filter(song => song.valence < 0.4);
+        agitation += lowValenceSongs.length;
+        if (agitation < 1) {
+            agitation = 1;
+        } else if (agitation > 10) {
+            agitation = 10;
+        }
+        return agitation;
+    }
+    function calculateVocalInstrumentalPreference (likedSongs) {
+        if (!Array.isArray(likedSongs)) {
+            likedSongs = Array.from(likedSongs);
+        }
+        let vocalInstrumentalPreference = 0;
+        const vocalSongs = likedSongs.filter(song => song.speechiness > 0.5);
+        const instrumentalSongs = likedSongs.filter(song => song.speechiness < 0.5);
+        vocalInstrumentalPreference += vocalSongs.length - instrumentalSongs.length;
+        if (vocalInstrumentalPreference < -10) {
+            vocalInstrumentalPreference = -10;
+        } else if (vocalInstrumentalPreference > 10) {
+            vocalInstrumentalPreference = 10;
+        }
+        return vocalInstrumentalPreference;
+    }
+    function calculateAttitude (likedSongs) {
+        if (!Array.isArray(likedSongs)) {
+            likedSongs = Array.from(likedSongs);
+        }
+        let attitude = 0;
+        const positiveSongs = likedSongs.filter(song => song.sentiment > 0);
+        const negativeSongs = likedSongs.filter(song => song.sentiment < 0);
+        attitude += positiveSongs.length - negativeSongs.length;
+        if (attitude < -10) {
+            attitude = -10;
+        } else if (attitude > 10) {
+            attitude = 10;
+        }
+        return attitude;
+    }
 });
 
 app.listen(port, () => {
