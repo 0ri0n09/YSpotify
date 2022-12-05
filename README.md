@@ -1,18 +1,33 @@
  # Projet Spotify - B3 | DEV
  
- ## Pour lancer le serveur, installer npm et les dépendances (npm i etc...)
- ## Commande pour lanecer le script de démarrage du serveur : 
- node index.js
+ ## Pour installer npm et les dépendances :
+ ### npm i
+ ### npm install express
+ ### npm install cookie-parser
+ ### npm install cors
+ ### npm install request
+ ### npm install query-string
+ ### npm install dotenv
+ 
+ ## Commande pour lancer le script de démarrage du serveur : 
+ ### node index.js
  
  ## Pour les requêtes et endpoints, utiliser par exemple (en GET ou POST) :
- http://localhost:8000/me
+ ### http://localhost:8000/me
  
- ## Avant de d'envoyer des requêtes, se connecter avec 
- http://localhost:8000/login
+ ## Avant d'envoyer des requêtes, s'authentifier et se connecter avec 
+ ### http://localhost:8000/login --> OAuth 2.0
+ ### ou se créer un utilisateur
+ ### http://localhost:8000/createUser
  
  ## Pour la documentation openAPI :
- http://localhost:8000/api-docs/
+ ### http://localhost:8000/api-docs
  
+# Groupe :
+### Jaremczuk Jonathan
+### Cocco Anthony
+### Pinel Antony
+### Bruno Alexandre
  
 
  
