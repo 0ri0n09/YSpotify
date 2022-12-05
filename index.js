@@ -7,9 +7,9 @@ const querystring = require ("querystring");
 const json = require ('./database.json');
 const groupManager = require ('./GroupManager.js');
 const userManager = require ('./UserManager.js');
-
 const app = express ();
 const port = 8000;
+
 app.use (express.json ());
 app.use (express.urlencoded ({ extended: true}));
 app.use (express.static(__dirname + '/public'))
@@ -18,7 +18,6 @@ app.use (express.static(__dirname + '/public'))
 
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-
 const swaggerOptions = {
     swaggerDefinition: {
         info: {
@@ -33,7 +32,6 @@ const swaggerOptions = {
     },
     apis: ["index.js"]
 };
-
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
